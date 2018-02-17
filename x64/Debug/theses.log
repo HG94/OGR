@@ -1,0 +1,4 @@
+﻿  main.cpp
+c:\users\hg\source\repos\theses\theses\ogr.h(35): warning C4018: '<': signed/unsigned mismatch
+c:\users\hg\source\repos\theses\theses\ogr.h(36): warning C4018: '<': signed/unsigned mismatch
+  theses.vcxproj -> C:\Users\HG\source\repos\theses\x64\Debug\theses.exe
