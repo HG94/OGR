@@ -45,69 +45,75 @@ void GetEdgesWithMyAlg(vector<pair<unsigned, unsigned>> graf_pixels, Mat graf_bi
 	int i;
 	int j;
 	Mat graf_vertexes;
-	graf_vertexes = graf_binary;
-	int k = 0;
-	for (j = 0; j < 4; ++j)
+	//use copyTo for deep copy
+	graf_binary.copyTo(graf_vertexes);
+	for (j = 0; j < 6; ++j)
 		for (i = 0; i < graf_pixels.size(); ++i)
+			//clearing border pixels
+			if (graf_pixels[i].first == 0 || graf_pixels[i].first == rows || graf_pixels[i].second == 0 || graf_pixels[i].second == cols)
+			{
+				graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
+				continue;
+			}
 			//checking (i - 1, j - 1) pixel
-			if (graf_pixels[i].first > 0 && graf_pixels[i].second > 0)
+			else if (graf_pixels[i].first > 0 && graf_pixels[i].second > 0)
 				if (graf_binary.at<uchar>(graf_pixels[i].first - 1, graf_pixels[i].second - 1) == 0)
 				{
-					++k;
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
 					continue;
 				}
-		cout << endl << "i == " << i;
-		cout << endl << "k == " << k;
-			/*//checking (i - 1, j) pixel
+			//checking (i - 1, j) pixel
 			else if(graf_pixels[i].first > 0)
-				if ((unsigned)(graf_binary.at<uchar>(graf_pixels[i].first - 1, graf_pixels[i].second)) == 0)
+				if ((graf_binary.at<uchar>(graf_pixels[i].first - 1, graf_pixels[i].second)) == 0)
 				{
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
 					continue;
 				}
 			//checking (i - 1, j + 1) pixel
-			else if (graf_pixels[i].first > 0 && graf_pixels[i].second < cols)
-				if ((unsigned)(graf_binary.at<uchar>(graf_pixels[i].first - 1, graf_pixels[i].second + 1)) == 0)
+			else if (graf_pixels[i].first > 0 && graf_pixels[i].second + 1 < cols)
+				if ((graf_binary.at<uchar>(graf_pixels[i].first - 1, graf_pixels[i].second + 1)) == 0)
 				{
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
 					continue;
 				}
 			//checking (i, j + 1) pixel
 			else if (graf_pixels[i].second + 1 < cols)
-				if ((unsigned)(graf_binary.at<uchar>(graf_pixels[i].first, graf_pixels[i].second + 1)) == 0)
+				if ((graf_binary.at<uchar>(graf_pixels[i].first, graf_pixels[i].second + 1)) == 0)
 				{
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
 					continue;
 				}
 			//checking (i + 1, j + 1) pixel
 			else if ((graf_pixels[i].first + 1) < rows && (graf_pixels[i].second + 1) < cols)
-				if ((unsigned)(graf_binary.at<uchar>(graf_pixels[i].first + 1, graf_pixels[i].second + 1)) == 0)
+				if ((graf_binary.at<uchar>(graf_pixels[i].first + 1, graf_pixels[i].second + 1)) == 0)
 				{	
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
 					continue;
 				}
 	 		//checking (i + 1, j) pixel
 			else if ((graf_pixels[i].first + 1) < rows)
-				if ((unsigned)(graf_binary.at<uchar>(graf_pixels[i].first + 1, graf_pixels[i].second)) == 0)
+				if ((graf_binary.at<uchar>(graf_pixels[i].first + 1, graf_pixels[i].second)) == 0)
 				{	
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
 					continue;
 				}
 			//checking (i + 1, j - 1) pixel
 			else if ((graf_pixels[i].first + 1) < rows && graf_pixels[i].second > 0)
-				if ((unsigned)(graf_binary.at<uchar>(graf_pixels[i].first + 1, graf_pixels[i].second - 1)) == 0)
+				if ((graf_binary.at<uchar>(graf_pixels[i].first + 1, graf_pixels[i].second - 1)) == 0)
 				{	
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
 					continue;
 				}
 			//checking (i, j - 1) pixel
 			else if (graf_pixels[i].second > 0)
-				if ((unsigned)(graf_binary.at<uchar>(graf_pixels[i].first, graf_pixels[i].second - 1)) == 0)
+				if ((graf_binary.at<uchar>(graf_pixels[i].first, graf_pixels[i].second - 1)) == 0)
 				{
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
 					continue;
-				}*/
+				}
+		//update graf_binary after every cycle with one pixel thinner graff
+		//TODO
+		//graf_vertexes.copyTo(graf_binary); didn't updated????
 	namedWindow("graff_vertexes", WINDOW_AUTOSIZE);
 	imshow("graff_vertexes", graf_vertexes);
 }
