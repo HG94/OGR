@@ -18,7 +18,7 @@ int main()
 	namedWindow("graff", WINDOW_AUTOSIZE);
 	imshow("graff", graf_pix);*/
 
-	GetEdgesWithMyAlg(graf_pixels, graf_binary);
+	GetVertexesWithMyAlg(graf_pixels, graf_binary);
 
 	waitKey(0);
 	return 0;

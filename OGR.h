@@ -11,6 +11,7 @@ static unsigned int cols;
 
 Mat RgbToBinary(string img_name)
 {
+	/*function takes as argment initial RGB image and returnes the same but binarised image*/
 	Mat graf_img = imread(img_name);
 	//namedWindow("graff", WINDOW_AUTOSIZE);
 	//imshow("graff", graf_img);
@@ -25,6 +26,8 @@ Mat RgbToBinary(string img_name)
 
 vector<pair<unsigned, unsigned>> GetGrafPixels(Mat graf_binary)
 {
+	/*function gets graff bynary image and fined all pixels that blong to 
+	graff(all white colored pixels)*/
 	int i;
 	int j;
 
@@ -40,19 +43,28 @@ vector<pair<unsigned, unsigned>> GetGrafPixels(Mat graf_binary)
 
 }
 
-void GetEdgesWithMyAlg(vector<pair<unsigned, unsigned>> graf_pixels, Mat graf_binary)
+void GetVertexesWithMyAlg(vector<pair<unsigned, unsigned>> graf_pixels, Mat graf_binary)
 {
+	/*function takes graf pixel cordinates and graff binary imege and finds graffvertexes using erosion
+	algorithm(cycleic deleted graff boundary pixels by setting their color to background color)*/
 	int i;
 	int j;
+	int deleted_pixels;
+	int deleted_pixels_prev;
 	Mat graf_vertexes;
 	//use copyTo for deep copy
 	graf_binary.copyTo(graf_vertexes);
-	for (j = 0; j < 6; ++j)
+	for (j = 0; j < 3; ++j)
+	{
+		if (j > 0 )
+			deleted_pixels_prev = deleted_pixels;
+		deleted_pixels = 0;
 		for (i = 0; i < graf_pixels.size(); ++i)
 			//clearing border pixels
-			if (graf_pixels[i].first == 0 || graf_pixels[i].first == rows || graf_pixels[i].second == 0 || graf_pixels[i].second == cols)
+			if (graf_pixels[i].first == 0 || graf_pixels[i].first == rows - 1 || graf_pixels[i].second == 0 || graf_pixels[i].second == cols - 1)
 			{
 				graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
+				++deleted_pixels;
 				continue;
 			}
 			//checking (i - 1, j - 1) pixel
@@ -60,13 +72,15 @@ void GetEdgesWithMyAlg(vector<pair<unsigned, unsigned>> graf_pixels, Mat graf_bi
 				if (graf_binary.at<uchar>(graf_pixels[i].first - 1, graf_pixels[i].second - 1) == 0)
 				{
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
+					++deleted_pixels;
 					continue;
 				}
 			//checking (i - 1, j) pixel
-			else if(graf_pixels[i].first > 0)
+			else if (graf_pixels[i].first > 0)
 				if ((graf_binary.at<uchar>(graf_pixels[i].first - 1, graf_pixels[i].second)) == 0)
 				{
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
+					++deleted_pixels;
 					continue;
 				}
 			//checking (i - 1, j + 1) pixel
@@ -74,6 +88,7 @@ void GetEdgesWithMyAlg(vector<pair<unsigned, unsigned>> graf_pixels, Mat graf_bi
 				if ((graf_binary.at<uchar>(graf_pixels[i].first - 1, graf_pixels[i].second + 1)) == 0)
 				{
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
+					++deleted_pixels;
 					continue;
 				}
 			//checking (i, j + 1) pixel
@@ -81,27 +96,31 @@ void GetEdgesWithMyAlg(vector<pair<unsigned, unsigned>> graf_pixels, Mat graf_bi
 				if ((graf_binary.at<uchar>(graf_pixels[i].first, graf_pixels[i].second + 1)) == 0)
 				{
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
+					++deleted_pixels;
 					continue;
 				}
 			//checking (i + 1, j + 1) pixel
 			else if ((graf_pixels[i].first + 1) < rows && (graf_pixels[i].second + 1) < cols)
 				if ((graf_binary.at<uchar>(graf_pixels[i].first + 1, graf_pixels[i].second + 1)) == 0)
-				{	
+				{
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
+					++deleted_pixels;
 					continue;
 				}
-	 		//checking (i + 1, j) pixel
+			//checking (i + 1, j) pixel
 			else if ((graf_pixels[i].first + 1) < rows)
 				if ((graf_binary.at<uchar>(graf_pixels[i].first + 1, graf_pixels[i].second)) == 0)
-				{	
+				{
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
+					++deleted_pixels;
 					continue;
 				}
 			//checking (i + 1, j - 1) pixel
 			else if ((graf_pixels[i].first + 1) < rows && graf_pixels[i].second > 0)
 				if ((graf_binary.at<uchar>(graf_pixels[i].first + 1, graf_pixels[i].second - 1)) == 0)
-				{	
+				{
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
+					++deleted_pixels;
 					continue;
 				}
 			//checking (i, j - 1) pixel
@@ -109,17 +128,37 @@ void GetEdgesWithMyAlg(vector<pair<unsigned, unsigned>> graf_pixels, Mat graf_bi
 				if ((graf_binary.at<uchar>(graf_pixels[i].first, graf_pixels[i].second - 1)) == 0)
 				{
 					graf_vertexes.at<uchar>(graf_pixels[i].first, graf_pixels[i].second) = 0;
+					++deleted_pixels;
 					continue;
 				}
 		//update graf_binary after every cycle with one pixel thinner graff
-		//TODO
-		//graf_vertexes.copyTo(graf_binary); didn't updated????
+		graf_vertexes.copyTo(graf_binary);
+		if (j > 0 && deleted_pixels < ((deleted_pixels_prev * 70) / 100))
+		{
+			cout << "breaking out of cycle at j == "<< j;
+			break;
+		}
+	}
 	namedWindow("graff_vertexes", WINDOW_AUTOSIZE);
 	imshow("graff_vertexes", graf_vertexes);
 }
 
+void CheckIsVertex()
+{
+	/*finction checks if all remaining pixels belongs to vertexes, if pixels remains in the 
+	plase where edges are crosing, function deletes them. */
+
+}
+
+void GetEdgesWithMyAlg(vector<pair<unsigned, unsigned>> graf_pixels, Mat graf_binary)
+{
+	/**/
+}
+
 void GetEdgesWithOpencv(Mat graf_binary)
 {
+	/*finding graff edges using opencv library functions
+	bt it didn't find all edges*/
 	/*Mat edges;
 	Canny(graf_binary, edges, 0, 0);
 	imwrite("edges.jpg", edges);
