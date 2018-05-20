@@ -144,7 +144,7 @@ Mat GetVertexesWithMyAlg(vector<pair<unsigned, unsigned>> graf_pixels, Mat graf_
 	return graf_vertexes;
 }
 
-void fillVertexes(vector<pair<unsigned, unsigned>> graf_pixels, Mat graf_vertexes, Mat graf_binary)
+Mat fillVertexes(vector<pair<unsigned, unsigned>> graf_pixels, Mat graf_vertexes, Mat graf_binary)
 { 
 	/*function fills find vertexes so many times how many time we do border pixels 
 	delition in GetVertexesWithMyAlg function*/
@@ -230,6 +230,7 @@ void fillVertexes(vector<pair<unsigned, unsigned>> graf_pixels, Mat graf_vertexe
 		}
 	namedWindow("graf_filled_vertexes", WINDOW_AUTOSIZE);
 	imshow("graf_filled_vertexes", graf_filled_vertexes);
+	return graf_filled_vertexes;
 }
 
 void CheckIsVertex()
@@ -239,9 +240,23 @@ void CheckIsVertex()
 	
 }
 
-void GetEdgesWithMyAlg(vector<pair<unsigned, unsigned>> graf_pixels, Mat graf_binary)
+void GetEdgesWithMyAlg(vector<pair<unsigned, unsigned>> graf_pixels, Mat graf_binary, Mat graf_filled_vertexes)
 {
-	/**/
+	/*finding edge pixels by using graf_binary and graf_filled_vertexes, getting graf skeleton,
+	finding port pixels, moving across the adge starting from port pixel and end
+	when we reach to another port pixel*/
+	Mat edge_pixels;
+	//use copyTo for deep copy
+	graf_binary.copyTo(edge_pixels);
+	vector<pair<unsigned, unsigned>> vertex_pixels;
+	vertex_pixels = GetGrafPixels(graf_filled_vertexes);
+	int i;
+	//getting edge pixels by deliting(bring to background color) vertex_pixels in binary_graf
+	for (i = 0; i < vertex_pixels.size(); ++i)
+		edge_pixels.at<uchar>(vertex_pixels[i].first, vertex_pixels[i].second) = 0;
+
+	namedWindow("edge_pixels", WINDOW_AUTOSIZE);
+	imshow("edge_pixels", edge_pixels);
 }
 
 void GetEdgesWithOpencv(Mat graf_binary)

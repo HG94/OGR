@@ -21,7 +21,10 @@ int main()
 	Mat graf_vertexes;
 	graf_vertexes = GetVertexesWithMyAlg(graf_pixels, graf_binary);
 
-	fillVertexes(graf_pixels, graf_vertexes, graf_binary);
+	Mat graf_filled_vertexes;
+	graf_filled_vertexes = fillVertexes(graf_pixels, graf_vertexes, graf_binary);
+
+	GetEdgesWithMyAlg(graf_pixels, graf_binary, graf_filled_vertexes);
 
 	waitKey(0);
 	return 0;
