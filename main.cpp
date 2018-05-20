@@ -18,7 +18,10 @@ int main()
 	namedWindow("graff", WINDOW_AUTOSIZE);
 	imshow("graff", graf_pix);*/
 
-	GetVertexesWithMyAlg(graf_pixels, graf_binary);
+	Mat graf_vertexes;
+	graf_vertexes = GetVertexesWithMyAlg(graf_pixels, graf_binary);
+
+	fillVertexes(graf_pixels, graf_vertexes, graf_binary);
 
 	waitKey(0);
 	return 0;
