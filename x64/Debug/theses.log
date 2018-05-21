@@ -1,4 +1,8 @@
-﻿  main.cpp
+﻿  stdafx.cpp
+  main.cpp
 c:\users\hg\source\repos\theses\theses\ogr.h(38): warning C4018: '<': signed/unsigned mismatch
 c:\users\hg\source\repos\theses\theses\ogr.h(39): warning C4018: '<': signed/unsigned mismatch
+c:\users\hg\source\repos\theses\theses\ogr.h(61): warning C4018: '<': signed/unsigned mismatch
+c:\users\hg\source\repos\theses\theses\ogr.h(62): warning C4018: '<': signed/unsigned mismatch
+c:\users\hg\source\repos\theses\theses\ogr.h(173): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   theses.vcxproj -> C:\Users\HG\source\repos\theses\x64\Debug\theses.exe
